@@ -1,5 +1,8 @@
 from cereal import car
 from selfdrive.car.ford.values import CANBUS
+import os
+import copy
+import random
 
 HUDControl = car.CarControl.HUDControl
 
@@ -182,6 +185,19 @@ def create_acc_ui_msg(packer, main_on: bool, enabled: bool, hud_control, stock_v
     "Tja_D_Stat": status,        # TJA status
   })
   return packer.make_can_msg("ACCDATA_3", CANBUS.main, values)
+
+
+def create_sp_throttle2_msg(packer, stock_values: dict):
+  values = copy.copy(stock_values)
+  if os.path.exists('/data/ruin_counter'):
+    values["VehVActlEng_No_Cnt"] = random.randint(0x0, 0xF)
+  if os.path.exists('/data/ruin_checksum'):
+    values["VehVActlEng_No_Cs"] = random.randint(0x0, 0xFF)
+  if os.path.exists('/data/bad_qf'):
+    # VAL_ 514 VehVActlEng_D_Qf 3 "OK" 2 "Not_Within_Specifications" 1 "No_Data_Exists" 0 "Faulty";
+    values["VehVActlEng_D_Qf"] = 0
+
+  return packer.make_can_msg("EngVehicleSpThrottle2", CANBUS.camera, values)
 
 
 def create_lkas_ui_msg(packer, main_on: bool, enabled: bool, steer_alert: bool, hud_control, stock_values: dict):

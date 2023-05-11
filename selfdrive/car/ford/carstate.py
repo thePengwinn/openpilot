@@ -4,6 +4,7 @@ from opendbc.can.can_define import CANDefine
 from opendbc.can.parser import CANParser
 from selfdrive.car.interfaces import CarStateBase
 from selfdrive.car.ford.values import CANBUS, DBC, CarControllerParams
+import copy
 
 GearShifter = car.CarState.GearShifter
 TransmissionType = car.CarParams.TransmissionType
@@ -30,6 +31,8 @@ class CarState(CarStateBase):
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
     ret.yawRate = cp.vl["Yaw_Data_FD1"]["VehYaw_W_Actl"]
     ret.standstill = cp.vl["DesiredTorqBrk"]["VehStop_D_Stat"] == 1
+
+    self.sp_throttle2 = copy.copy(cp.vl["EngVehicleSpThrottle2"])
 
     # gas pedal
     ret.gas = cp.vl["EngVehicleSpThrottle"]["ApedPos_Pc_ActlArb"] / 100.
@@ -158,12 +161,29 @@ class CarState(CarStateBase):
       ("HeadLghtHiCtrl_D_RqAhb", "Steering_Data_FD1"),
     ]
 
+    signals += [
+      ("StrtrMtrDlyStrt_B_Stat", "EngVehicleSpThrottle2"),
+      ("VehVTrlrAid_B_Avail", "EngVehicleSpThrottle2"),
+      ("StrtrMtrCtlMsgTxt_D_Rq", "EngVehicleSpThrottle2"),
+      ("VehVActlEng_No_Cs", "EngVehicleSpThrottle2"),
+      ("VehVActlEng_No_Cnt", "EngVehicleSpThrottle2"),
+      ("Veh_V_RqCcSet", "EngVehicleSpThrottle2"),
+      ("VehVActlEng_D_Qf", "EngVehicleSpThrottle2"),
+      ("Veh_V_ActlEng", "EngVehicleSpThrottle2"),
+      ("GearRvrse_D_Actl", "EngVehicleSpThrottle2"),
+      ("StrtrMtrCtlMsgTxt_D2_Rq", "EngVehicleSpThrottle2"),
+      ("NEW_SIGNAL_1", "EngVehicleSpThrottle2"),  # these are always zero on ICE Bronco Sport
+      ("NEW_SIGNAL_2", "EngVehicleSpThrottle2"),
+      ("NEW_SIGNAL_3", "EngVehicleSpThrottle2"),
+    ]
+
     checks = [
       # sig_address, frequency
       ("BrakeSysFeatures", 50),
       ("Yaw_Data_FD1", 100),
       ("DesiredTorqBrk", 50),
       ("EngVehicleSpThrottle", 100),
+      ("EngVehicleSpThrottle2", 50),
       ("BrakeSnData_4", 50),
       ("EngBrakeData", 10),
       ("Cluster_Info1_FD1", 10),
