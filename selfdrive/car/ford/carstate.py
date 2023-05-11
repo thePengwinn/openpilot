@@ -33,6 +33,7 @@ class CarState(CarStateBase):
     ret.standstill = cp.vl["DesiredTorqBrk"]["VehStop_D_Stat"] == 1
 
     self.sp_throttle2 = copy.copy(cp.vl["EngVehicleSpThrottle2"])
+    self.brake_sys_features = copy.copy(cp.vl["BrakeSysFeatures"])
 
     # gas pedal
     ret.gas = cp.vl["EngVehicleSpThrottle"]["ApedPos_Pc_ActlArb"] / 100.
@@ -175,6 +176,17 @@ class CarState(CarStateBase):
       ("NEW_SIGNAL_1", "EngVehicleSpThrottle2"),  # these are always zero on ICE Bronco Sport
       ("NEW_SIGNAL_2", "EngVehicleSpThrottle2"),
       ("NEW_SIGNAL_3", "EngVehicleSpThrottle2"),
+    ]
+
+    signals += [
+      ("VehStab_D_Stat", "BrakeSysFeatures"),
+      ("BrkFluidLvl_D_Stat", "BrakeSysFeatures"),
+      ("LsmcBrkDecel_D_Stat", "BrakeSysFeatures"),
+      ("VehYawNonLin_W_Rq", "BrakeSysFeatures"),
+      ("VehYawLin_W_Rq", "BrakeSysFeatures"),
+      ("VehVActlBrk_No_Cs", "BrakeSysFeatures"),
+      ("VehVActlBrk_No_Cnt", "BrakeSysFeatures"),
+      ("VehVActlBrk_D_Qf", "BrakeSysFeatures"),
     ]
 
     checks = [

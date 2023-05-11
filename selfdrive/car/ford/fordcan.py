@@ -189,15 +189,29 @@ def create_acc_ui_msg(packer, main_on: bool, enabled: bool, hud_control, stock_v
 
 def create_sp_throttle2_msg(packer, stock_values: dict):
   values = copy.copy(stock_values)
-  if os.path.exists('/data/ruin_counter'):
+  if os.path.exists('/data/ruin_pcm_counter'):
     values["VehVActlEng_No_Cnt"] = random.randint(0x0, 0xF)
-  if os.path.exists('/data/ruin_checksum'):
+  if os.path.exists('/data/ruin_pcm_checksum'):
     values["VehVActlEng_No_Cs"] = random.randint(0x0, 0xFF)
-  if os.path.exists('/data/bad_qf'):
+  if os.path.exists('/data/bad_pcm_qf'):
     # VAL_ 514 VehVActlEng_D_Qf 3 "OK" 2 "Not_Within_Specifications" 1 "No_Data_Exists" 0 "Faulty";
     values["VehVActlEng_D_Qf"] = 0
 
   return packer.make_can_msg("EngVehicleSpThrottle2", CANBUS.camera, values)
+
+
+def create_brake_sys_features_msg(packer, stock_values: dict):
+  values = copy.copy(stock_values)
+  if os.path.exists('/data/ruin_abs_counter'):
+    values["VehVActlBrk_No_Cnt"] = random.randint(0x0, 0xF)
+  if os.path.exists('/data/ruin_abs_checksum'):
+    values["VehVActlBrk_No_Cs"] = random.randint(0x0, 0xFF)
+  if os.path.exists('/data/bad_abs_qf'):
+    # VAL_ 1045 VehVActlBrk_D_Qf 3 "OK" 2 "Not_Within_Specifications" 1 "No_Data_Exists" 0 "Faulty";
+    values["VehVActlBrk_D_Qf"] = 0
+
+  return packer.make_can_msg("BrakeSysFeatures", CANBUS.camera, values)
+
 
 
 def create_lkas_ui_msg(packer, main_on: bool, enabled: bool, steer_alert: bool, hud_control, stock_values: dict):
