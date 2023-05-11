@@ -34,6 +34,7 @@ class CarState(CarStateBase):
 
     self.sp_throttle2 = copy.copy(cp.vl["EngVehicleSpThrottle2"])
     self.brake_sys_features = copy.copy(cp.vl["BrakeSysFeatures"])
+    self.steering_pinion_data = copy.copy(cp.vl["SteeringPinion_Data"])
 
     # gas pedal
     ret.gas = cp.vl["EngVehicleSpThrottle"]["ApedPos_Pc_ActlArb"] / 100.
@@ -187,6 +188,13 @@ class CarState(CarStateBase):
       ("VehVActlBrk_No_Cs", "BrakeSysFeatures"),
       ("VehVActlBrk_No_Cnt", "BrakeSysFeatures"),
       ("VehVActlBrk_D_Qf", "BrakeSysFeatures"),
+    ]
+
+    signals += [
+      ("StePw_B_Rq", "SteeringPinion_Data"),
+      ("StePinRelInit_An_Sns", "SteeringPinion_Data"),
+      ("StePinAn_No_Cs", "SteeringPinion_Data"),
+      ("StePinAn_No_Cnt", "SteeringPinion_Data"),
     ]
 
     checks = [

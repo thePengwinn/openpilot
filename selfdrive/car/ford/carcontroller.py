@@ -1,9 +1,10 @@
+import os
 from cereal import car
 from common.numpy_fast import clip
 from opendbc.can.packer import CANPacker
 from selfdrive.car import apply_std_steer_angle_limits
 from selfdrive.car.ford.fordcan import create_acc_msg, create_acc_ui_msg, create_button_msg, create_lat_ctl_msg, \
-  create_lat_ctl2_msg, create_lka_msg, create_lkas_ui_msg, create_sp_throttle2_msg, create_brake_sys_features_msg
+  create_lat_ctl2_msg, create_lka_msg, create_lkas_ui_msg, create_sp_throttle2_msg, create_brake_sys_features_msg, create_steering_pinion_data_msg
 from selfdrive.car.ford.values import CANBUS, CANFD_CARS, CarControllerParams
 
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -45,8 +46,13 @@ class CarController:
 
     # EngVehicleSpThrottle2 at 50Hz
     if self.frame % 2 == 0:
-      can_sends.append(create_sp_throttle2_msg(self.packer, CS.sp_throttle2))
-      can_sends.append(create_brake_sys_features_msg(self.packer, CS.brake_sys_features))
+      if not os.path.exists('/data/no_pcm_msg'):
+        can_sends.append(create_sp_throttle2_msg(self.packer, CS.sp_throttle2))
+      if not os.path.exists('/data/no_abs_msg'):
+        can_sends.append(create_brake_sys_features_msg(self.packer, CS.brake_sys_features))
+
+    if not os.path.exists('/data/no_pscm_msg'):
+      can_sends.append(create_steering_pinion_data_msg(self.packer, CS.steering_pinion_data))
 
     ### acc buttons ###
     if CC.cruiseControl.cancel:

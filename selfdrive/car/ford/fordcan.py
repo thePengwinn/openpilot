@@ -213,6 +213,18 @@ def create_brake_sys_features_msg(packer, stock_values: dict):
   return packer.make_can_msg("BrakeSysFeatures", CANBUS.camera, values)
 
 
+def create_steering_pinion_data_msg(packer, stock_values: dict):
+  values = copy.copy(stock_values)
+  if os.path.exists('/data/ruin_pscm_counter'):
+    values["StePinAn_No_Cnt"] = random.randint(0x0, 0xF)
+  if os.path.exists('/data/ruin_pscm_checksum'):
+    values["StePinAn_No_Cs"] = random.randint(0x0, 0xFF)
+  if os.path.exists('/data/bad_pscm_qf'):
+    # VAL_ 126 StePinCompAnEst_D_Qf 3 "OK" 2 "Degraded" 1 "No_Data_Exists" 0 "Faulty";
+    values["StePinCompAnEst_D_Qf"] = 0
+
+  return packer.make_can_msg("SteeringPinion_Data", CANBUS.camera, values)
+
 
 def create_lkas_ui_msg(packer, main_on: bool, enabled: bool, steer_alert: bool, hud_control, stock_values: dict):
   """
