@@ -21,10 +21,11 @@ MAX_USER_TORQUE = 500
 
 def compute_gb_accel(accel, speed):
   creep_brake = 0.0
-  creep_speed = 6.0
+  # creep_speed = 6.0
   creep_brake_value = 0.4
-  if speed < creep_speed:
-    creep_brake = (creep_speed - speed) / creep_speed * creep_brake_value
+  # if speed < creep_speed:
+  #   creep_brake = (creep_speed - speed) / creep_speed * creep_brake_value
+  creep_brake = interp(speed, [3.0, 6.0], [creep_brake_value, 0])
   return float(accel) + clip(accel - creep_brake, -creep_brake, 0)
 
 
