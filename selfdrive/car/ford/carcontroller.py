@@ -103,6 +103,9 @@ class CarController:
                                          CS.out.cruiseState.standstill, hud_control,
                                          CS.acc_tja_status_stock_values))
 
+    if self.CP.carFingerprint in CANFD_CARS:
+      can_sends = [[addr, t, dat, bus + 4] for (addr, t, dat, bus) in can_sends]
+
     self.main_on_last = main_on
     self.lkas_enabled_last = CC.latActive
     self.steer_alert_last = steer_alert
