@@ -87,6 +87,11 @@ CAR_INFO: Dict[str, Union[CarInfo, List[CarInfo]]] = {
 FW_QUERY_CONFIG = FwQueryConfig(
   requests=[
     Request(
+      [StdQueries.MANUFACTURER_SOFTWARE_VERSION_REQUEST],
+      [StdQueries.MANUFACTURER_SOFTWARE_VERSION_RESPONSE],
+      whitelist_ecus=[Ecu.engine],
+    ),
+    Request(
       [StdQueries.TESTER_PRESENT_REQUEST, StdQueries.MANUFACTURER_SOFTWARE_VERSION_REQUEST],
       [StdQueries.TESTER_PRESENT_RESPONSE, StdQueries.MANUFACTURER_SOFTWARE_VERSION_RESPONSE],
       whitelist_ecus=[Ecu.engine],
