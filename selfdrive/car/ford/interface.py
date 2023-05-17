@@ -25,7 +25,7 @@ class CarInterface(CarInterfaceBase):
       ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.noOutput),
                            get_safety_config(car.CarParams.SafetyModel.ford, Panda.FLAG_FORD_CANFD)]
     else:
-      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.Ford)]
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.ford)]
 
     ret.steerControlType = car.CarParams.SteerControlType.angle
     ret.steerActuatorDelay = 0.2
