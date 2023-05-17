@@ -222,7 +222,11 @@ class CarState(CarStateBase):
         ("Side_Detect_R_Stat", 5),
       ]
 
-    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CANBUS.main)
+    bus = CANBUS.main
+    if CP.carFingerprint in CANFD_CARS:
+      bus += 4
+
+    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, bus)
 
   @staticmethod
   def get_cam_can_parser(CP):
@@ -276,4 +280,8 @@ class CarState(CarStateBase):
       ("IPMA_Data", 1),
     ]
 
-    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CANBUS.camera)
+    bus = CANBUS.camera
+    if CP.carFingerprint in CANFD_CARS:
+      bus += 4
+
+    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, bus)
