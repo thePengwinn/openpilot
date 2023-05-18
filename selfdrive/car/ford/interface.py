@@ -21,15 +21,22 @@ class CarInterface(CarInterfaceBase):
     # added to selfdrive/car/tests/routes.py, we can remove it from this list.
     ret.dashcamOnly = candidate in {CAR.FOCUS_MK4}
 
-    if candidate in CANFD_CARS:
-      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.noOutput),
-                           get_safety_config(car.CarParams.SafetyModel.ford, Panda.FLAG_FORD_CANFD)]
-    else:
-      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.ford)]
-
     ret.steerControlType = car.CarParams.SteerControlType.angle
     ret.steerActuatorDelay = 0.2
     ret.steerLimitTimer = 1.0
+
+    safety_param = 0
+    ret.experimentalLongitudinalAvailable = True
+    if experimental_long:
+      ret.openpilotLongitudinalControl = True
+      safety_param |= Panda.FLAG_FORD_LONG_CONTROL
+
+    if candidate in CANFD_CARS:
+      safety_param |= Panda.FLAG_FORD_CANFD
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.noOutput),
+                           get_safety_config(car.CarParams.SafetyModel.ford, safety_param)]
+    else:
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.ford, safety_param)]
 
     if candidate == CAR.BRONCO_SPORT_MK1:
       ret.wheelbase = 2.67
