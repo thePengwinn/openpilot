@@ -20,7 +20,7 @@
 ExitHandler do_exit;
 
 
-void run_model(BodyModelState &model, VisionIpcClient &vipc_client) {
+void run_model(BodyModelState *model, VisionIpcClient &vipc_client) {
   PubMaster pm({"navModel"});
 
   double last_ts = 0;
@@ -32,7 +32,7 @@ void run_model(BodyModelState &model, VisionIpcClient &vipc_client) {
     if (buf == nullptr) continue;
 
     double t1 = millis_since_boot();
-    BodyModelResult *model_res = bodymodel_eval_frame(&model, buf);
+    BodyModelResult *model_res = bodymodel_eval_frame(model, buf);
     double t2 = millis_since_boot();
 
     // send body packet
@@ -58,8 +58,9 @@ int main(int argc, char **argv) {
   cl_context context = CL_CHECK_ERR(clCreateContext(NULL, 1, &device_id, NULL, NULL, &err));
 
   // init the models
-  BodyModelState model;
-  bodymodel_init(&model, device_id, context);
+  // have to malloc since the output array is too big for the stack!
+  BodyModelState *model = (BodyModelState*)malloc(sizeof(BodyModelState));
+  bodymodel_init(model, device_id, context);
   LOGW("models loaded, modeld starting");
 
   VisionIpcClient vipc_client = VisionIpcClient("camerad", VISION_STREAM_DRIVER, true);
@@ -73,7 +74,8 @@ int main(int argc, char **argv) {
     run_model(model, vipc_client);
   }
 
-  bodymodel_free(&model);
+  bodymodel_free(model);
+  free(model);
   CL_CHECK(clReleaseContext(context));
   return 0;
 }

@@ -8,7 +8,7 @@
 #include "selfdrive/modeld/runners/run.h"
 
 constexpr int BODY_INPUT_SIZE = 416 * 640 * 3;
-constexpr int BODY_NET_OUTPUT_SIZE = 6380 * 85;
+constexpr int BODY_NET_OUTPUT_SIZE = 16380 * 85;
 
 struct BodyModelResult {
   std::array<float, BODY_NET_OUTPUT_SIZE> preds;
