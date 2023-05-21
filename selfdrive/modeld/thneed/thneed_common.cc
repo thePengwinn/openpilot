@@ -51,9 +51,8 @@ void Thneed::copy_inputs(float **finputs, bool internal) {
 void Thneed::copy_output(float *foutput) {
   if (output != NULL) {
     size_t sz;
-    printf("%lu", sz);
     clGetMemObjectInfo(output, CL_MEM_SIZE, sizeof(sz), &sz, NULL);
-    printf("copying %lu for output %p -> %p\n", sz, output, foutput);
+    if (debug >= 1) printf("copying %lu for output %p -> %p\n", sz, output, foutput);
     CL_CHECK(clEnqueueReadBuffer(command_queue, output, CL_TRUE, 0, sz, foutput, 0, NULL, NULL));
   } else {
     printf("CAUTION: model output is NULL, does it have no outputs?\n");

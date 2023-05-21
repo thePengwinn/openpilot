@@ -45,7 +45,7 @@ void run_model(BodyModelState &model, VisionIpcClient &vipc_client) {
 }
 
 int main(int argc, char **argv) {
-  if (false) {
+  if (!Hardware::PC()) {
     int ret;
     ret = util::set_realtime_priority(54);
     assert(ret == 0);

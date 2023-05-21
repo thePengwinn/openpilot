@@ -31,11 +31,8 @@ BodyModelResult* bodymodel_eval_frame(BodyModelState* s, VisionBuf* buf) {
   }
 
   double t1 = millis_since_boot();
-  printf("Adding image...\n");
   s->m->addImage((float*)s->net_input_buf, BODY_INPUT_SIZE);
-  printf("Added image\n");
   s->m->execute();
-  printf("Executed!\n");
   double t2 = millis_since_boot();
 
   BodyModelResult *model_res = (BodyModelResult*)&s->output;
