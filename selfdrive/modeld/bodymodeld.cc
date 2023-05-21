@@ -21,7 +21,7 @@ ExitHandler do_exit;
 
 
 void run_model(BodyModelState &model, VisionIpcClient &vipc_client) {
-  PubMaster pm({"modelV2"});
+  PubMaster pm({"navModel"});
 
   double last_ts = 0;
   uint32_t last_frame_id = 0;
@@ -45,7 +45,7 @@ void run_model(BodyModelState &model, VisionIpcClient &vipc_client) {
 }
 
 int main(int argc, char **argv) {
-  if (!Hardware::PC()) {
+  if (false) {
     int ret;
     ret = util::set_realtime_priority(54);
     assert(ret == 0);

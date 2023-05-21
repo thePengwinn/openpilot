@@ -32,15 +32,24 @@ void* BodyThneedModel::getExtraBuf() {
 
 void BodyThneedModel::execute() {
   if (!recorded) {
+    printf("1\n");
     thneed->record = true;
+    printf("2\n");
     float *inputs[1] = {input};
+    printf("3\n");
     thneed->copy_inputs(inputs);
+    printf("4\n");
     thneed->clexec();
+    printf("5\n");
     thneed->copy_output(output);
+    printf("6\n");
     thneed->stop();
+    printf("7\n");
     recorded = true;
   } else {
+    printf("8\n");
     float *inputs[1] = {input};
+    printf("9\n");
     thneed->execute(inputs, output);
   }
 }

@@ -17,19 +17,25 @@
 
 void bodymodel_init(BodyModelState* s, cl_device_id device_id, cl_context context) {
 #ifdef USE_THNEED
-  s->m = new BodyThneedModel("models/body.thneed",
+  s->m = new BodyThneedModel("models/yolov5nn.thneed",
 #else
-  s->m = new ONNXModel("models/body.onnx",
+  s->m = new ONNXModel("models/yolov5nn.onnx",
 #endif
    &s->output[0], BODY_NET_OUTPUT_SIZE, USE_GPU_RUNTIME, true, false, context);
 }
 
 BodyModelResult* bodymodel_eval_frame(BodyModelState* s, VisionBuf* buf) {
-  memcpy(s->net_input_buf, buf->addr, BODY_INPUT_SIZE);
+  // memcpy(s->net_input_buf, buf->addr, BODY_INPUT_SIZE);
+  for (int i=0; i<BODY_INPUT_SIZE; i++) {
+    s->net_input_buf[i] = (float)((uint8_t *)buf->addr)[i];
+  }
 
   double t1 = millis_since_boot();
-  s->m->addImage((float*)s->net_input_buf, BODY_INPUT_SIZE/sizeof(float));
+  printf("Adding image...\n");
+  s->m->addImage((float*)s->net_input_buf, BODY_INPUT_SIZE);
+  printf("Added image\n");
   s->m->execute();
+  printf("Executed!\n");
   double t2 = millis_since_boot();
 
   BodyModelResult *model_res = (BodyModelResult*)&s->output;
