@@ -16,6 +16,7 @@ void BodyThneedModel::addTrafficConvention(float *state, int state_size) {}
 void BodyThneedModel::addDesire(float *state, int state_size) {}
 void BodyThneedModel::addDrivingStyle(float *state, int state_size) {}
 void BodyThneedModel::addNavFeatures(float *state, int state_size) {}
+void BodyThneedModel::addExtra(float *extra_input_buf, int buf_size) {}
 
 void BodyThneedModel::addImage(float *image_input_buf, int buf_size) {
   input = image_input_buf;

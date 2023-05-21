@@ -7,7 +7,7 @@
 #include "selfdrive/modeld/models/commonmodel.h"
 #include "selfdrive/modeld/runners/run.h"
 
-constexpr int BODY_INPUT_SIZE = 1928 * 1208 * 3;
+constexpr int BODY_INPUT_SIZE = 416 * 640 * 3;
 constexpr int BODY_NET_OUTPUT_SIZE = 4;
 
 struct BodyModelResult {
