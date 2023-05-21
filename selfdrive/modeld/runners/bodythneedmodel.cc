@@ -11,25 +11,25 @@ BodyThneedModel::BodyThneedModel(const char *path, float *loutput, size_t loutpu
   output = loutput;
 }
 
-void ThneedModel::addRecurrent(float *state, int state_size) {}
-void ThneedModel::addTrafficConvention(float *state, int state_size) {}
-void ThneedModel::addDesire(float *state, int state_size) {}
-void ThneedModel::addDrivingStyle(float *state, int state_size) {}
-void ThneedModel::addNavFeatures(float *state, int state_size) {}
+void BodyThneedModel::addRecurrent(float *state, int state_size) {}
+void BodyThneedModel::addTrafficConvention(float *state, int state_size) {}
+void BodyThneedModel::addDesire(float *state, int state_size) {}
+void BodyThneedModel::addDrivingStyle(float *state, int state_size) {}
+void BodyThneedModel::addNavFeatures(float *state, int state_size) {}
 
-void ThneedModel::addImage(float *image_input_buf, int buf_size) {
+void BodyThneedModel::addImage(float *image_input_buf, int buf_size) {
   input = image_input_buf;
 }
 
-void* ThneedModel::getInputBuf() {
+void* BodyThneedModel::getInputBuf() {
   return &(thneed->input_clmem[0]);
 }
 
-void* ThneedModel::getExtraBuf() {
+void* BodyThneedModel::getExtraBuf() {
   return nullptr;
 }
 
-void ThneedModel::execute() {
+void BodyThneedModel::execute() {
   if (!recorded) {
     thneed->record = true;
     float *inputs[1] = {input};
