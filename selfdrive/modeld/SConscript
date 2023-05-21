@@ -27,6 +27,7 @@ thneed_src = [
   "thneed/thneed_qcom2.cc",
   "thneed/serialize.cc",
   "runners/thneedmodel.cc",
+  "runners/bodythneedmodel.cc",
 ]
 
 use_thneed = not GetOption('no_thneed')
@@ -86,6 +87,7 @@ if GetOption('pc_thneed'):
     "thneed/thneed_pc.cc",
     "thneed/serialize.cc",
     "runners/thneedmodel.cc",
+    "runners/bodythneedmodel.cc",
   ]
   llenv['CFLAGS'].append("-DUSE_THNEED")
   llenv['CXXFLAGS'].append("-DUSE_THNEED")
@@ -100,4 +102,9 @@ llenv.Program('_modeld', [
 lenv.Program('_navmodeld', [
     "navmodeld.cc",
     "models/nav.cc",
+  ]+common_model, LIBS=libs + transformations)
+
+lenv.Program('_bodymodeld', [
+    "bodymodeld.cc",
+    "models/body.cc",
   ]+common_model, LIBS=libs + transformations)
