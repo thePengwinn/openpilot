@@ -21,7 +21,7 @@ ExitHandler do_exit;
 
 
 void run_model(BodyModelState *model, VisionIpcClient &vipc_client) {
-  PubMaster pm({"navModel"});
+  PubMaster pm({"logMessage"});
 
   double last_ts = 0;
   uint32_t last_frame_id = 0;

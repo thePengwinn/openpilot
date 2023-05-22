@@ -120,4 +120,5 @@ lenv.Program('_navmodeld', [
 lenv.Program('_bodymodeld', [
     "bodymodeld.cc",
     "models/body.cc",
+    "models/yolo.cc",
   ]+common_model, LIBS=libs + transformations)

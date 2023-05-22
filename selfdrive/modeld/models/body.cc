@@ -40,16 +40,16 @@ BodyModelResult* bodymodel_eval_frame(BodyModelState* s, VisionBuf* buf) {
   return model_res;
 }
 
-void bodymodel_publish(PubMaster &pm, uint32_t frame_id, const BodyModelResult &model_res, float execution_time) {
+void bodymodel_publish(PubMaster &pm, uint32_t frame_id, BodyModelResult &model_res, float execution_time) {
+  std::string res = parse_yolo_outputs(&model_res.preds[0]);
+
   // make msg
   MessageBuilder msg;
-  auto framed = msg.initEvent().initNavModel();
-  framed.setFrameId(frame_id);
-  framed.setModelExecutionTime(execution_time);
-  framed.setDspExecutionTime(model_res.gpu_execution_time);
-  framed.setFeatures(to_kj_array_ptr(model_res.preds));
+  auto event = msg.initEvent();
+  event.initLogMessage(res.size());
+  event.setLogMessage(res.c_str());
 
-  pm.send("navModel", msg);
+  pm.send("logMessage", msg);
 }
 
 void bodymodel_free(BodyModelState* s) {
