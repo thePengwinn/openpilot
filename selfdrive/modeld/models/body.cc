@@ -26,8 +26,13 @@ void bodymodel_init(BodyModelState* s, cl_device_id device_id, cl_context contex
 
 BodyModelResult* bodymodel_eval_frame(BodyModelState* s, VisionBuf* buf) {
   // memcpy(s->net_input_buf, buf->addr, BODY_INPUT_SIZE);
-  for (int i=0; i<BODY_INPUT_SIZE; i++) {
-    s->net_input_buf[i] = (float)((uint8_t *)buf->addr)[i];
+  // for (int i=0; i<BODY_INPUT_SIZE; i++) {
+  //   s->net_input_buf[i] = (float)((uint8_t *)buf->addr)[i];
+  // }
+  for (int y = 0; y < 416; y++) {
+    for (int x = 0; x < 640; x++) {
+      s->net_input_buf[y*640 + x] = (float)((uint8_t*)buf->addr)[y*3*1920 + x*3] / 255.0f;
+    }
   }
 
   double t1 = millis_since_boot();
