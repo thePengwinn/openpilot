@@ -25,13 +25,12 @@ void bodymodel_init(BodyModelState* s, cl_device_id device_id, cl_context contex
 }
 
 BodyModelResult* bodymodel_eval_frame(BodyModelState* s, VisionBuf* buf) {
-  // memcpy(s->net_input_buf, buf->addr, BODY_INPUT_SIZE);
-  // for (int i=0; i<BODY_INPUT_SIZE; i++) {
-  //   s->net_input_buf[i] = (float)((uint8_t *)buf->addr)[i];
-  // }
   for (int y = 0; y < 416; y++) {
     for (int x = 0; x < 640; x++) {
-      s->net_input_buf[y*640 + x] = (float)((uint8_t*)buf->addr)[y*3*1920 + x*3] / 255.0f;
+      float val = (float)((uint8_t*)buf->addr)[3*y*buf->stride + 3*x] / 255.0f;
+      s->net_input_buf[640*416*0 + (y*640 + x)] = val;
+      s->net_input_buf[640*416*1 + (y*640 + x)] = val;
+      s->net_input_buf[640*416*2 + (y*640 + x)] = val;
     }
   }
 

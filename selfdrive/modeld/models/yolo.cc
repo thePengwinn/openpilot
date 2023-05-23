@@ -2,14 +2,16 @@
 
 using namespace json11;
 
+Json classes = Json::array { "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush" };
+
 class Vec4f {
 public:
     Vec4f() = default;
     Vec4f(float _x, float _y, float _z, float _w) {
         data[0] = _x;
         data[1] = _y;
-	data[2] = _z;
-	data[3] = _w;
+        data[2] = _z;
+        data[3] = _w;
     }
 
     float data[4] = { 0, 0, 0, 0 };
@@ -83,7 +85,7 @@ void nms(const std::vector<Rect> &srcRects, std::vector<Rect> &resRects, std::ve
 
 std::string parse_yolo_outputs(float *output) {
     size_t size = 16380 * 85;
-    int dimensions = 85; // 0,1,2,3 ->box,4->confidence，5-85 -> coco classes confidence 
+    int dimensions = 85; // 0,1,2,3 ->box,4->confidence，5-85 -> coco classes confidence
     int rows = size / dimensions; //25200
     int confidenceIndex = 4;
     int labelStartIndex = 5;
@@ -91,7 +93,7 @@ std::string parse_yolo_outputs(float *output) {
     float modelHeight = 640.0;
     float xGain = modelWidth / 640;
     float yGain = modelHeight / 416;
-    
+
     std::vector<Vec4f> locations;
     std::vector<int> labels;
     std::vector<float> confidences;
@@ -135,23 +137,22 @@ std::string parse_yolo_outputs(float *output) {
     for (int i = 0; i < res_indexs.size(); ++i) {
         int index = res_indexs[i];
         Json item = Json::object {
-    	    // { "label", classes[labels[index]].c_str() },
-	    { "label_index", index },
-	    { "score", confidences[index] },
-	    { "location", Json::object {
-	        { "x", locations[index][0] },
-	        { "y", locations[index][1] },
-	        { "width", locations[index][2] - locations[index][0] },
-		{ "height", locations[index][3] - locations[index][1] }
-	    }}
-	};
-	items.push_back(item);
+            { "label", classes[labels[index]] },
+            { "score", confidences[index] },
+            { "location", Json::object {
+                { "x", locations[index][0] },
+                { "y", locations[index][1] },
+                { "width", locations[index][2] - locations[index][0] },
+                { "height", locations[index][3] - locations[index][1] }
+            }}
+        };
+        items.push_back(item);
     }
 
     Json result = Json::object {
         { "code",  0 },
-	{ "msg", "success" },
-	{ "data", Json::array { items }}
+        { "msg", "success" },
+        { "data", Json::array { items }}
     };
 
     return result.dump();
