@@ -214,7 +214,8 @@ class CarInterface(CarInterfaceBase):
 
     # if the smartDSU is detected, openpilot can send ACC_CMD (and the smartDSU will block it from the DSU) or not (the DSU is "connected")
     ret.openpilotLongitudinalControl = bool(ret.flags & ToyotaFlags.SMART_DSU) or ret.enableDsu or candidate in (TSS2_CAR - RADAR_ACC_CAR)
-    ret.autoResumeSng = ret.openpilotLongitudinalControl and candidate in NO_STOP_TIMER_CAR
+    ret.autoResumeSng = ret.openpilotLongitudinalControl and \
+                        (candidate in NO_STOP_TIMER_CAR or ret.enableGasInterceptor)
 
     if not ret.openpilotLongitudinalControl:
       ret.safetyConfigs[0].safetyParam |= Panda.FLAG_TOYOTA_STOCK_LONGITUDINAL
@@ -256,8 +257,8 @@ class CarInterface(CarInterfaceBase):
     events = self.create_common_events(ret)
 
     if self.CP.openpilotLongitudinalControl:
-      if ret.cruiseState.standstill and not ret.brakePressed and not self.CP.enableGasInterceptor:
-        events.add(EventName.resumeRequired)
+      # if ret.cruiseState.standstill and not ret.brakePressed and not self.CP.enableGasInterceptor:
+      #   events.add(EventName.resumeRequired)
       if self.CS.low_speed_lockout:
         events.add(EventName.lowSpeedLockout)
       if ret.vEgo < self.CP.minEnableSpeed:

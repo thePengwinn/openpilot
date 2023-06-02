@@ -275,8 +275,8 @@ class CarInterface(CarInterfaceBase):
     if below_min_enable_speed and not (ret.standstill and ret.brake >= 20 and
                                        self.CP.networkLocation == NetworkLocation.fwdCamera):
       events.add(EventName.belowEngageSpeed)
-    if ret.cruiseState.standstill:
-      events.add(EventName.resumeRequired)
+    # if ret.cruiseState.standstill:
+    #   events.add(EventName.resumeRequired)
     if ret.vEgo < self.CP.minSteerSpeed:
       events.add(EventName.belowSteerSpeed)
 

@@ -687,7 +687,10 @@ class Controls:
 
     speeds = self.sm['longitudinalPlan'].speeds
     if len(speeds):
-      CC.cruiseControl.resume = self.enabled and CS.cruiseState.standstill and speeds[-1] > 0.1
+      CC.cruiseControl.resume = self.enabled and not CS.brakePressed and \
+                                CS.cruiseState.standstill and speeds[-1] > 0.1
+      if CC.cruiseControl.resume and not self.CP.autoResumeSng:
+        self.events.add(EventName.resumeRequired)
 
     hudControl = CC.hudControl
     hudControl.setSpeed = float(self.v_cruise_helper.v_cruise_cluster_kph * CV.KPH_TO_MS)

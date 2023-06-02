@@ -505,7 +505,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
       "Press Resume to Exit Standstill",
       "",
       AlertStatus.userPrompt, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .2),
+      Priority.HIGH, VisualAlert.none, AudibleAlert.none, .2),  # TODO: figure out better priority later, just a test
   },
 
   EventName.belowSteerSpeed: {
