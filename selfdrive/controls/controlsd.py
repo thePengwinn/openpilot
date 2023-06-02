@@ -687,8 +687,7 @@ class Controls:
 
     speeds = self.sm['longitudinalPlan'].speeds
     if len(speeds):
-      CC.cruiseControl.resume = self.enabled and not CS.brakePressed and \
-                                CS.cruiseState.standstill and speeds[-1] > 0.1
+      CC.cruiseControl.resume = self.active and CS.cruiseState.standstill and speeds[-1] > 0.1
       if CC.cruiseControl.resume and not self.CP.autoResumeSng:
         self.events.add(EventName.resumeRequired)
 
