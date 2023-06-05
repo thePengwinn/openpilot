@@ -19,7 +19,7 @@ class CarInterface(CarInterfaceBase):
     # These cars are dashcam only for lack of test coverage.
     # Once a user confirms each car works and a test route is
     # added to selfdrive/car/tests/routes.py, we can remove it from this list.
-    ret.dashcamOnly = candidate in {CAR.FOCUS_MK4}
+    ret.dashcamOnly = candidate in {CAR.F_150_MK14, CAR.FOCUS_MK4}
 
     ret.radarUnavailable = True
     ret.steerControlType = car.CarParams.SteerControlType.angle
@@ -45,6 +45,12 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 3.025
       ret.steerRatio = 16.8
       ret.mass = 2050 + STD_CARGO_KG
+
+    elif candidate == CAR.F_150_MK14:
+      # required trim only on SuperCrew
+      ret.wheelbase = 3.69
+      ret.steerRatio = 17.0
+      ret.mass = 2000 + STD_CARGO_KG
 
     elif candidate == CAR.FOCUS_MK4:
       ret.wheelbase = 2.7

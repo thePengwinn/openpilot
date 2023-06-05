@@ -48,11 +48,12 @@ class CAR:
   BRONCO_SPORT_MK1 = "FORD BRONCO SPORT 1ST GEN"
   ESCAPE_MK4 = "FORD ESCAPE 4TH GEN"
   EXPLORER_MK6 = "FORD EXPLORER 6TH GEN"
+  F_150_MK14 = "FORD F-150 14TH GEN"
   FOCUS_MK4 = "FORD FOCUS 4TH GEN"
   MAVERICK_MK1 = "FORD MAVERICK 1ST GEN"
 
 
-CANFD_CARS: Set[str] = set()
+CANFD_CARS: Set[str] = {CAR.F_150_MK14}
 
 
 class RADAR:
@@ -69,8 +70,14 @@ class FordCarInfo(CarInfo):
   car_parts: CarParts = CarParts.common([CarHarness.ford_q3])
 
   def init_make(self, CP: car.CarParams):
-    if CP.carFingerprint in (CAR.BRONCO_SPORT_MK1, CAR.MAVERICK_MK1):
-      self.car_parts = CarParts([Device.three_angled_mount, CarHarness.ford_q3])
+    harness = CarHarness.ford_q3
+    if CP.carFingerprint in CANFD_CARS:
+      harness = CarHarness.ford_q4
+
+    if CP.carFingerprint in (CAR.BRONCO_SPORT_MK1, CAR.F_150_MK14, CAR.MAVERICK_MK1):
+      self.car_parts = CarParts([Device.three_angled_mount, harness])
+    else:
+      self.car_parts = CarParts.common([harness])
 
 
 CAR_INFO: Dict[str, Union[CarInfo, List[CarInfo]]] = {
@@ -83,6 +90,7 @@ CAR_INFO: Dict[str, Union[CarInfo, List[CarInfo]]] = {
     FordCarInfo("Ford Explorer 2020-22"),
     FordCarInfo("Lincoln Aviator 2021", "Co-Pilot360 Plus"),
   ],
+  CAR.F_150_MK14: FordCarInfo("Ford F-150 2023", "Co-Pilot360 Active 2.0"),
   CAR.FOCUS_MK4: FordCarInfo("Ford Focus EU 2018", "Adaptive Cruise Control with Lane Centering"),
   CAR.MAVERICK_MK1: FordCarInfo("Ford Maverick 2022-23", "Co-Pilot360 Assist"),
 }
@@ -195,6 +203,21 @@ FW_VERSIONS = {
       b'L1MP-14G395-AD\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
       b'L1MP-14G395-AE\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
       b'L1MP-14G395-JB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+  },
+  CAR.F_150_MK14: {
+    (Ecu.eps, 0x730, None): [
+    ],
+    (Ecu.abs, 0x760, None): [
+    ],
+    (Ecu.fwdRadar, 0x764, None): [
+    ],
+    (Ecu.fwdCamera, 0x706, None): [
+    ],
+    (Ecu.engine, 0x7E0, None): [
+      b'PL3A-14C204-BRB\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.shiftByWire, 0x732, None): [
     ],
   },
   CAR.FOCUS_MK4: {
