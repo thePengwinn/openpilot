@@ -48,7 +48,7 @@ LOCAL_PORT_WHITELIST = {8022}
 
 LOG_ATTR_NAME = 'user.upload'
 LOG_ATTR_VALUE_MAX_UNIX_TIME = int.to_bytes(2147483647, 4, sys.byteorder)
-RECONNECT_TIMEOUT_S = 70
+RECONNECT_TIMEOUT_S = 30
 
 RETRY_DELAY = 10  # seconds
 MAX_RETRY_COUNT = 30  # Try for at most 5 minutes if upload fails immediately
