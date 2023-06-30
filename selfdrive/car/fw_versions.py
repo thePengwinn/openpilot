@@ -228,7 +228,7 @@ def set_obd_multiplexing(params: Params, obd_multiplexing: bool):
     cloudlog.warning("OBD multiplexing set successfully")
 
 
-def get_fw_versions_ordered(logcan, sendcan, ecu_rx_addrs, timeout=0.1, num_pandas=1, debug=False, progress=False) -> \
+def get_fw_versions_ordered(logcan, sendcan, ecu_rx_addrs, broadcast_addrs, timeout=0.1, num_pandas=1, debug=False, progress=False) -> \
   List[capnp.lib.capnp._DynamicStructBuilder]:
   """Queries for FW versions ordering brands by likelihood, breaks when exact match is found"""
 
@@ -240,7 +240,7 @@ def get_fw_versions_ordered(logcan, sendcan, ecu_rx_addrs, timeout=0.1, num_pand
     if not len(brand_matches[brand]):
       continue
 
-    car_fw = get_fw_versions(logcan, sendcan, query_brand=brand, timeout=timeout, num_pandas=num_pandas, debug=debug, progress=progress)
+    car_fw = get_fw_versions(logcan, sendcan, query_brand=brand, broadcast_addrs=broadcast_addrs, timeout=timeout, num_pandas=num_pandas, debug=debug, progress=progress)
     all_car_fw.extend(car_fw)
     # Try to match using FW returned from this brand only
     matches = match_fw_to_car_exact(build_fw_dict(car_fw))
@@ -250,7 +250,7 @@ def get_fw_versions_ordered(logcan, sendcan, ecu_rx_addrs, timeout=0.1, num_pand
   return all_car_fw
 
 
-def get_fw_versions(logcan, sendcan, query_brand=None, extra=None, timeout=0.1, num_pandas=1, debug=False, progress=False) -> \
+def get_fw_versions(logcan, sendcan, query_brand=None, broadcast_addrs=None, extra=None, timeout=0.1, num_pandas=1, debug=False, progress=False) -> \
   List[capnp.lib.capnp._DynamicStructBuilder]:
   versions = VERSIONS.copy()
   params = Params()
@@ -300,8 +300,11 @@ def get_fw_versions(logcan, sendcan, query_brand=None, extra=None, timeout=0.1, 
           set_obd_multiplexing(params, r.obd_multiplexing)
 
         try:
+          # Include addresses: for current request brand, if its ECU is whitelisted in this request,
+          # and if its response address is not a suspected broadcast address
           query_addrs = [(a, s) for (b, a, s) in addr_chunk if b in (brand, 'any') and
-                         (len(r.whitelist_ecus) == 0 or ecu_types[(b, a, s)] in r.whitelist_ecus)]
+                         (len(r.whitelist_ecus) == 0 or ecu_types[(b, a, s)] in r.whitelist_ecus) and
+                         uds.get_rx_addr_for_tx_addr(a, r.rx_offset) not in broadcast_addrs]
 
           if query_addrs:
             query = IsoTpParallelQuery(sendcan, logcan, r.bus, query_addrs, r.request, r.response, r.rx_offset, debug=debug)
