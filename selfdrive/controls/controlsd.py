@@ -177,6 +177,7 @@ class Controls:
     self.experimental_mode = False
     self.v_cruise_helper = VCruiseHelper(self.CP)
     self.recalibrating_seen = False
+    self.valid_seen = False
 
     # TODO: no longer necessary, aside from process replay
     self.sm['liveParameters'].valid = True
@@ -434,7 +435,8 @@ class Controls:
     self.sm.update(0)
 
     if not self.initialized:
-      all_valid = CS.canValid and self.sm.all_checks()
+      self.valid_seen |= CS.canValid
+      all_valid = (not self.valid_seen or CS.canValid) and self.sm.all_checks()
       timed_out = self.sm.frame * DT_CTRL > (6. if REPLAY else 3.5)
       if all_valid or timed_out or SIMULATION:
         available_streams = VisionIpcClient.available_streams("camerad", block=False)
