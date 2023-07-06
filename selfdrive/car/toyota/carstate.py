@@ -39,6 +39,8 @@ class CarState(CarStateBase):
     self.low_speed_lockout = False
     self.acc_type = 1
     self.lkas_hud = {}
+    self.steering_lta = {}
+    self.steering_lta_updated = False
 
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
@@ -160,6 +162,9 @@ class CarState(CarStateBase):
 
     if self.CP.carFingerprint != CAR.PRIUS_V:
       self.lkas_hud = copy.copy(cp_cam.vl["LKAS_HUD"])
+    if self.CP.carFingerprint in TSS2_CAR:
+      self.steering_lta = copy.copy(cp_cam.vl["STEERING_LTA"])
+      self.steering_lta_updated = len(cp_cam.vl_all["STEERING_LTA"]["COUNTER"]) > 0
 
     return ret
 
@@ -283,6 +288,25 @@ class CarState(CarStateBase):
   def get_cam_can_parser(CP):
     signals = []
     checks = []
+
+    if CP.carFingerprint in TSS2_CAR:
+      signals += [
+        ("CHECKSUM", "STEERING_LTA"),
+        ("SETME_X3", "STEERING_LTA"),
+        ("PERCENTAGE", "STEERING_LTA"),
+        ("SETME_X64", "STEERING_LTA"),
+        ("ANGLE", "STEERING_LTA"),
+        ("STEER_ANGLE_CMD", "STEERING_LTA"),
+        ("STEER_REQUEST_2", "STEERING_LTA"),
+        ("LKA_ACTIVE", "STEERING_LTA"),
+        ("CLEAR_HOLD_STEERING_ALERT", "STEERING_LTA"),
+        ("COUNTER", "STEERING_LTA"),
+        ("STEER_REQUEST", "STEERING_LTA"),
+        ("SETME_X1", "STEERING_LTA"),
+      ]
+      checks += [
+        ("STEERING_LTA", 30),  # 44 Hz should be min on all cars
+      ]
 
     if CP.carFingerprint != CAR.PRIUS_V:
       signals += [

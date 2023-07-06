@@ -92,9 +92,34 @@ class CarController:
     # sending it at 100Hz seem to allow a higher rate limit, as the rate limit seems imposed
     # on consecutive messages
     can_sends.append(create_steer_command(self.packer, apply_steer, apply_steer_req))
-    if self.frame % 2 == 0 and self.CP.carFingerprint in TSS2_CAR:
-      lta_active = CC.latActive and self.CP.steerControlType == SteerControlType.angle
-      can_sends.append(create_lta_steer_command(self.packer, self.last_angle, lta_active, self.frame // 2))
+
+    # TSS >=2 messages
+    if self.CP.carFingerprint in TSS2_CAR:
+      if self.frame % 100 == 0:  # 1 Hz
+        can_sends.append([0x2fd, 0, bytes(8), 0])
+
+      if self.frame % 33 == 0:  # 3 Hz
+        can_sends.append([0x367, 0, bytes(2), 0])
+
+      if self.frame % 100 == 0:  # 1 Hz
+        can_sends.append([0x36d, 0, bytes(8), 0])
+
+      if self.frame % 20 == 0:  # 5 Hz
+        can_sends.append([0x371, 0, bytes(8), 0])
+
+      if self.frame % 100 == 0:  # 1 Hz
+        can_sends.append([0x414, 0, bytes(8), 0])
+
+      if self.frame % 100 == 0:  # 1 Hz
+        can_sends.append([0x4d3, 0, bytes(8), 0])
+
+      if self.frame % 100 == 0:  # 1 Hz
+        can_sends.append([0x6ef, 0, bytes(8), 0])
+
+      # if self.frame % 2 == 0 and self.CP.carFingerprint in TSS2_CAR:
+      if CS.steering_lta_updated and self.CP.carFingerprint in TSS2_CAR:
+        lta_active = CC.latActive and self.CP.steerControlType == SteerControlType.angle
+        can_sends.append(create_lta_steer_command(self.packer, self.last_angle, lta_active, self.frame // 2, CS.steering_lta))
 
     # *** gas and brake ***
     if self.CP.enableGasInterceptor and CC.longActive:
