@@ -120,7 +120,7 @@ def fingerprint(logcan, sendcan, num_pandas):
   params.put("CarVin", vin)
 
   # disable OBD multiplexing for potential ECU knockouts
-  set_obd_multiplexing(params, False)
+  # set_obd_multiplexing(params, False)
   params.put_bool("FirmwareQueryDone", True)
 
   finger = gen_empty_fingerprint()
@@ -131,8 +131,9 @@ def fingerprint(logcan, sendcan, num_pandas):
   done = False
 
   # drain CAN socket so we always get the latest messages
-  messaging.drain_sock_raw(logcan)
+  # messaging.drain_sock_raw(logcan)
 
+  done = True
   while not done:
     a = get_one_can(logcan)
 
