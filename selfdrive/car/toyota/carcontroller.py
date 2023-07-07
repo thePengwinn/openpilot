@@ -95,23 +95,26 @@ class CarController:
 
     # TSS >=2 messages
     if self.CP.carFingerprint in TSS2_CAR:
-      if self.frame % 100 == 0:  # 1 Hz
-        can_sends.append([0x2fd, 0, bytes(8), 0])
+      # if self.frame % 100 == 0:  # 1 Hz
+      #   can_sends.append([0x2fd, 0, bytes(8), 0])
 
       if self.frame % 33 == 0:  # 3 Hz
         can_sends.append([0x367, 0, bytes(2), 0])
 
-      if self.frame % 100 == 0:  # 1 Hz
-        can_sends.append([0x36d, 0, bytes(8), 0])
-
-      if self.frame % 20 == 0:  # 5 Hz
-        can_sends.append([0x371, 0, bytes(8), 0])
-
-      if self.frame % 100 == 0:  # 1 Hz
-        can_sends.append([0x414, 0, bytes(8), 0])
-
-      if self.frame % 100 == 0:  # 1 Hz
-        can_sends.append([0x4d3, 0, bytes(8), 0])
+      # if self.frame % 100 == 0:  # 1 Hz
+      #   can_sends.append([0x36d, 0, bytes(8), 0])
+      #
+      # if self.frame % 20 == 0:  # 5 Hz
+      #   can_sends.append([0x371, 0, bytes(8), 0])
+      #
+      # if self.frame % 100 == 0:  # 1 Hz
+      #   can_sends.append([0x414, 0, bytes(8), 0])
+      #
+      # if self.frame % 100 == 0:  # 1 Hz
+      #   can_sends.append([0x4d3, 0, bytes(8), 0])
+      #
+      # if self.frame % 100 == 0:  # 1 Hz
+      #   can_sends.append([0x6ef, 0, bytes(8), 0])
 
       if self.frame % 2 == 0 and self.CP.carFingerprint in TSS2_CAR:
       # if CS.steering_lta_updated and self.CP.carFingerprint in TSS2_CAR:
