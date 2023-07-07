@@ -32,6 +32,8 @@ class CarControllerParams:
   # however the EPS has its own internal limits at all speeds which are less than that
   ANGLE_RATE_LIMIT_UP = AngleRateLimit(speed_bp=[5, 25], angle_v=[0.36, 0.18])
   ANGLE_RATE_LIMIT_DOWN = AngleRateLimit(speed_bp=[5, 25], angle_v=[0.36, 0.26])
+  # ANGLE_RATE_LIMIT_UP = AngleRateLimit(speed_bp=[5, 25], angle_v=[0.5, 1.0])
+  # ANGLE_RATE_LIMIT_DOWN = AngleRateLimit(speed_bp=[5, 25], angle_v=[0.5, 1.0])
 
   # needs to be within +-3 degrees of current angle to avoid windup
   ANGLE_DELTA_MAX = 5
