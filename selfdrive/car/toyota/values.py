@@ -36,7 +36,7 @@ class CarControllerParams:
   # ANGLE_RATE_LIMIT_DOWN = AngleRateLimit(speed_bp=[5, 25], angle_v=[0.5, 1.0])
 
   # needs to be within +-3 degrees of current angle to avoid windup
-  ANGLE_DELTA_MAX = 5
+  ANGLE_DELTA_MAX = 8
 
   def __init__(self, CP):
     if CP.lateralTuning.which == 'torque':

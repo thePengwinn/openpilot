@@ -86,7 +86,7 @@ class CarController:
 
         # This might be better now with the apply bit modulation
         # # limit max angle error between cmd and actual to reduce EPS integral windup
-        # # TODO: can we configure this with a signal?
+        # TODO: injection test with this too, check max torque
         # apply_angle = clip(apply_angle,
         #                    -abs(torque_sensor_angle) - self.params.ANGLE_DELTA_MAX,
         #                    abs(torque_sensor_angle) + self.params.ANGLE_DELTA_MAX)
