@@ -87,9 +87,11 @@ class CarController:
         # This might be better now with the apply bit modulation
         # # limit max angle error between cmd and actual to reduce EPS integral windup
         # TODO: injection test with this too, check max torque
-        # apply_angle = clip(apply_angle,
-        #                    -abs(torque_sensor_angle) - self.params.ANGLE_DELTA_MAX,
-        #                    abs(torque_sensor_angle) + self.params.ANGLE_DELTA_MAX)
+        if self.op_params.get('DELTA_LIMITING'):
+          angle_delta_max = self.op_params.get('DELTA_LIMITING_ANGLE')
+          apply_angle = clip(apply_angle,
+                             -abs(torque_sensor_angle) - angle_delta_max,
+                             abs(torque_sensor_angle) + angle_delta_max)
 
         # Clip max angle to acceptable lateral accel limits
         # v_ego = max(CS.out.vEgo, 5.)
@@ -108,13 +110,16 @@ class CarController:
 
         # This is roughly equivalent to above, but may not work if desired angle is insanely high
         # might want to restrict an error around torque_sensor_angle at all times, within rates
-        apply_angle = interp(abs(CS.out.steeringTorque), [40, 100],
-                             [apply_angle, apply_angle * 1 / 10 + torque_sensor_angle * 1 - 1 / 10])
+        if self.op_params.get('DRIVER_TORQUE_LIMITING'):
+          apply_angle = interp(abs(CS.out.steeringTorque), [40, 100],
+                               [apply_angle, apply_angle * 1 / 10 + torque_sensor_angle * 1 - 1 / 10])
 
         # if torque is above limit, force angle to lower
         # TODO: tune this, also won't work well near 0. multiplier instead of offset?
         sign_of = 1 if apply_angle >= 0 else -1
-        max_torque_angle_mod = interp(abs(CS.out.steeringTorqueEps), [1500 - 100, 1500 + 100], [0, -1]) * sign_of
+        max_allowed_torque = self.op_params.get('MAX_ALLOWED_TORQUE')
+        max_torque_angle_mod = interp(abs(CS.out.steeringTorqueEps), [max_allowed_torque - 100,
+                                                                      max_allowed_torque + 100], [0, -1]) * sign_of
         apply_angle += max_torque_angle_mod
 
         if not CC.latActive:

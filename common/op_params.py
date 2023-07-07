@@ -110,6 +110,10 @@ class opParams:
       'BIT': Param(0, NUMBER, 'changes to 1 briefly when user touches wheel or when engaging', live=True),
       'LKA_ACTIVE': Param(0, NUMBER, 'is 1 when camera is using LTA to bring car back in lane', live=True),
       'USE_ALT_ANGLE_CMD': Param(False, bool, 'True for alt angle command (not steering wheel, path angle?)', live=True),
+      'DELTA_LIMITING': Param(False, bool, 'Limit apply angle to current angle', live=True),
+      'DELTA_LIMITING_ANGLE': Param(8.0, NUMBER, 'How close to enforce in deg', live=True),
+      'DRIVER_TORQUE_LIMITING': Param(True, bool, 'Use driver torque to limit angle', live=True),
+      'MAX_ALLOWED_TORQUE': Param(1500, int, 'in scaled units. 1500 is LKA max', live=True),
     }
 
     self._to_delete = ['TLD_V2']  # a list of unused params you want to delete from users' params file
