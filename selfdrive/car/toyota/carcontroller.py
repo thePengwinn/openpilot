@@ -114,7 +114,7 @@ class CarController:
         # if torque is above limit, force angle to lower
         # TODO: tune this, also won't work well near 0. multiplier instead of offset?
         sign_of = 1 if apply_angle >= 0 else -1
-        max_torque_angle_mod = interp(abs(CS.out.steeringTorqueEps), [1500 - 250, 1500 + 250], [0, -1]) * sign_of
+        max_torque_angle_mod = interp(abs(CS.out.steeringTorqueEps), [1500 - 100, 1500 + 100], [0, -1]) * sign_of
         apply_angle += max_torque_angle_mod
 
         if not CC.latActive:
