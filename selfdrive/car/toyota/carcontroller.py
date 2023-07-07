@@ -82,7 +82,7 @@ class CarController:
       if self.frame % 2 == 0:
         # EPS uses the torque sensor angle to control with, offset to compensate
         apply_angle = actuators.steeringAngleDeg + CS.out.steeringAngleOffsetDeg
-        # torque_sensor_angle = CS.out.steeringAngleDeg + CS.out.steeringAngleOffsetDeg
+        torque_sensor_angle = CS.out.steeringAngleDeg + CS.out.steeringAngleOffsetDeg
 
         # This might be better now with the apply bit modulation
         # # limit max angle error between cmd and actual to reduce EPS integral windup
@@ -100,6 +100,11 @@ class CarController:
 
         # Angular rate limit based on speed
         apply_angle = apply_std_steer_angle_limits(apply_angle, self.last_angle, CS.out.vEgo, self.params)
+
+        # TODO: really should be before rate limits, but could wind up if you are consistently moving wheel faster
+        # TODO: not sure what this mess is, an old commit said "decent torque blending"
+        percentage = interp(abs(CS.out.steeringTorque), [40, 100], [100, 0])
+        apply_angle = interp(percentage, [-10, 100], [torque_sensor_angle, apply_angle])
 
         if not CC.latActive:
           apply_angle = CS.out.steeringAngleDeg + CS.out.steeringAngleOffsetDeg
