@@ -103,8 +103,13 @@ class CarController:
 
         # TODO: really should be before rate limits, but could wind up if you are consistently moving wheel faster
         # TODO: not sure what this mess is, an old commit said "decent torque blending"
-        percentage = interp(abs(CS.out.steeringTorque), [40, 100], [100, 0])
-        apply_angle = interp(percentage, [-10, 100], [torque_sensor_angle, apply_angle])
+        # percentage = interp(abs(CS.out.steeringTorque), [40, 100], [100, 0])
+        # apply_angle = interp(percentage, [-10, 100], [torque_sensor_angle, apply_angle])
+
+        # This is roughly equivalent to above, but may not work if desired angle is insanely high
+        # might want to restrict an error around torque_sensor_angle at all times, within rates
+        apply_angle = interp(abs(CS.out.steeringTorque), [40, 100],
+                             [apply_angle, apply_angle * 1 / 10 + torque_sensor_angle * 1 - 1 / 10])
 
         # if torque is above limit, force angle to lower
         # TODO: tune this, also won't work well near 0. multiplier instead of offset?
