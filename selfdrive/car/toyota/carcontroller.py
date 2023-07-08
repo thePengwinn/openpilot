@@ -110,7 +110,7 @@ class CarController:
 
         # This is roughly equivalent to above, but may not work if desired angle is insanely high
         # might want to restrict an error around torque_sensor_angle at all times, within rates
-        if self.op_params.get('DRIVER_TOQUE_ANGLE_LIMITING'):
+        if self.op_params.get('DRIVER_TORQUE_ANGLE_LIMITING'):
           apply_angle = interp(abs(CS.out.steeringTorque), [40, 100],
                                [apply_angle, apply_angle * 1 / 10 + torque_sensor_angle * 1 - 1 / 10])
 
