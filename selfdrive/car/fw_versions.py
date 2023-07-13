@@ -235,13 +235,26 @@ def get_fw_versions_ordered(logcan, sendcan, ecu_rx_addrs, timeout=0.1, num_pand
   all_car_fw = []
   brand_matches = get_brand_ecu_matches(ecu_rx_addrs)
 
+  expected_fw = [(Ecu.fwdRadar, b'\xf1\x00CV1_ RDR -----      1.00 1.01 99110-CV000         '), (Ecu.adas, b'\xf1\x00CV1 ADRV 1.00 1.04 211027'), (Ecu.hvac, b"\xf1\x00CV   \x0097255-CV830CONTROL ASS'Y-DATC  1.08_CVDATC21.04.06_1.00 "), (Ecu.cornerRadar, b'\xf1\x00CV  BCW RR 1.00 , 1.01 (ur !\x02\x90\x07$'), (Ecu.fwdCamera, b'\xf1\x00CV1 MFC  AT USA LHD 1.00 1.05 99210-CV000 211027'), (Ecu.parkingAdas, b'\xf1\x10CV1  ADAS_PRK ANL 1.00 1.04 99910-CV070')]
+    
   for brand in sorted(brand_matches, key=lambda b: len(brand_matches[b]), reverse=True):
+    if brand != 'hyundai':
+      continue
     # Skip this brand if there are no matching present ECUs
     if not len(brand_matches[brand]):
       continue
 
-    car_fw = get_fw_versions(logcan, sendcan, query_brand=brand, timeout=timeout, num_pandas=num_pandas, debug=debug, progress=progress)
-    all_car_fw.extend(car_fw)
+    successful_queries = 0
+    total_queries = 50
+    for _ in range(total_queries):
+      car_fw = get_fw_versions(logcan, sendcan, query_brand=brand, timeout=timeout, num_pandas=num_pandas, debug=debug, progress=progress)
+      all_car_fw.extend(car_fw)
+
+      got_fw = [(fw.ecu, fw.fwVersion) for fw in car_fw]
+      successful_queries += int(sorted(expected_fw) == sorted(got_fw))
+
+    cloudlog.error(f'successful queries {successful_queries} of {total_queries}')
+
     # Try to match using FW returned from this brand only
     matches = match_fw_to_car_exact(build_fw_dict(car_fw))
     if len(matches) == 1:
