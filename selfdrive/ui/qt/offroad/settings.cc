@@ -8,10 +8,6 @@
 
 #include "selfdrive/ui/qt/offroad/networking.h"
 
-#ifdef ENABLE_MAPS
-#include "selfdrive/ui/qt/maps/map_settings.h"
-#endif
-
 #include "common/params.h"
 #include "common/watchdog.h"
 #include "common/util.h"
@@ -27,7 +23,7 @@
 #include "selfdrive/ui/qt/widgets/input.h"
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
-  // param, title, desc, icon, confirm
+  // param, title, desc, icon
   std::vector<std::tuple<QString, QString, QString, QString>> toggle_defs{
     {
       "OpenpilotEnabledToggle",
@@ -91,7 +87,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
 
 
   std::vector<QString> longi_button_texts{tr("Aggressive"), tr("Standard"), tr("Relaxed")};
-  ButtonParamControl* long_personality_setting = new ButtonParamControl("LongitudinalPersonality", tr("Driving Personality"),
+  long_personality_setting = new ButtonParamControl("LongitudinalPersonality", tr("Driving Personality"),
                                           tr("Standard is recommended. In aggressive mode, openpilot will follow lead cars closer and be more aggressive with the gas and brake. In relaxed mode openpilot will stay further away from lead cars."),
                                           "../assets/offroad/icon_speed_limit.png",
                                           longi_button_texts);
@@ -154,16 +150,15 @@ void TogglesPanel::updateToggles() {
       params.remove("ExperimentalLongitudinalEnabled");
     }
     op_long_toggle->setVisible(CP.getExperimentalLongitudinalAvailable() && !is_release);
-
-    const bool op_long = CP.getOpenpilotLongitudinalControl() && !CP.getExperimentalLongitudinalAvailable();
-    const bool exp_long_enabled = CP.getExperimentalLongitudinalAvailable() && params.getBool("ExperimentalLongitudinalEnabled");
-    if (op_long || exp_long_enabled) {
+    if (hasLongitudinalControl(CP)) {
       // normal description and toggle
       e2e_toggle->setEnabled(true);
       e2e_toggle->setDescription(e2e_description);
+      long_personality_setting->setEnabled(true);
     } else {
       // no long for now
       e2e_toggle->setEnabled(false);
+      long_personality_setting->setEnabled(false);
       params.remove("ExperimentalMode");
 
       const QString unavailable = tr("Experimental mode is currently unavailable on this car since the car's stock ACC is used for longitudinal control.");
@@ -172,7 +167,7 @@ void TogglesPanel::updateToggles() {
                           tr("openpilot longitudinal control may come in a future update.");
       if (CP.getExperimentalLongitudinalAvailable()) {
         if (is_release) {
-          long_desc = unavailable + " " + tr("An experimental version of openpilot longitudinal control can be tested, along with Experimental mode, on non-release branches.");
+          long_desc = unavailable + " " + tr("An alpha version of openpilot longitudinal control can be tested, along with Experimental mode, on non-release branches.");
         } else {
           long_desc = tr("Enable experimental longitudinal control to allow Experimental mode.");
         }
@@ -382,12 +377,6 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
   };
-
-#ifdef ENABLE_MAPS
-  auto map_panel = new MapPanel(this);
-  panels.push_back({tr("Navigation"), map_panel});
-  QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
-#endif
 
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {
