@@ -156,10 +156,10 @@ void MapRenderer::update() {
   m_map->render();
   gl_functions->glFlush();
   double end_t = millis_since_boot();
-  last_llk_rendered = (*sm)["liveLocationKalman"].getLogMonoTime();
 
   if ((vipc_server != nullptr) && loaded()) {
     publish((end_t - start_t) / 1000.0, true);
+    last_llk_rendered = (*sm)["liveLocationKalman"].getLogMonoTime();
   }
 }
 
