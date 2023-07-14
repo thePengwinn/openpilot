@@ -117,7 +117,6 @@ optional = true
 aenum = "^3.1.11"
 aiohttp = "^3.8.1"
 albumentations = "^1.2.1"
-apex = { url = "https://github.com/commaai/apex/releases/download/pytorch2.0.0%2Bcu11.8/apex-0.1-cp38-cp38-linux_x86_64.whl" }
 azure-cli-core = "^2.38.0"
 azure-common = "^1.1.28"
 azure-core = "^1.24.2"
@@ -166,9 +165,9 @@ scikit-learn = "^1.1.1"
 segmentation-models-pytorch = "==0.3.2"
 simplejson = "^3.17.6"
 SQLAlchemy = "^1.4.39"
-torch = { url = "https://download.pytorch.org/whl/cu118/torch-2.0.0%2Bcu118-cp38-cp38-linux_x86_64.whl" }
+torch = { url = "https://download.pytorch.org/whl/cu118/torch-2.0.1+cu118-cp311-cp311-linux_x86_64.whl" }
 torchsummary = "^1.5.1"
-torchvision = { url = "https://download.pytorch.org/whl/cu118/torchvision-0.15.1%2Bcu118-cp38-cp38-linux_x86_64.whl" }
+torchvision = { url = "https://download.pytorch.org/whl/cu118/torchvision-0.15.1%2Bcu118-cp311-cp311-linux_x86_64.whl" }
 triton = "^2.0.0"
 Werkzeug = "^2.1.2"
 zerorpc = { git = "https://github.com/commaai/zerorpc-python.git", branch = "master" }
